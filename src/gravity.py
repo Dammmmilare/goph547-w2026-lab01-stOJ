@@ -1,0 +1,36 @@
+def gravity_potential_point(x, xm, m, G=6.674e-11) :
+    """Compute the gravity potential due to a point mass.
+    Parameters---------
+    x : array_like, shape=(3,)
+    Coordinates of survey point.
+    xm : array_like, shape=(3,)
+    Coordinates of point mass anomaly.
+    m : float
+    Mass of the anomaly.
+    G : float, optional, default=6.674e-11
+    Constant of gravitation.
+    Default in SI units.
+    Allows user to modify if using different unit.
+    Returns------
+    float
+    Gravity potential at x due to anomaly at xm.
+    """
+
+def gravity_effect_point(x, xm, m, G=6.674e-11) :
+    """Compute the vertical gravity effect due to a point 
+    mass (positive downward).
+    Parameters---------
+    x : array_like, shape=(3,)
+    Coordinates of survey point.
+    xm : array_like, shape=(3,)
+    Coordinates of point mass anomaly.
+    m : float
+    Mass of the anomaly.
+    G : float, optional, default=6.674e-11
+    Constant of gravitation.
+    Default in SI units.
+    Allows user to modify if using different unit.
+    Returns------
+    float
+    Gravity effect at x due to anomaly at xm.
+    """
