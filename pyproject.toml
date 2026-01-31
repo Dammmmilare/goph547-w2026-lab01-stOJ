@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "goph547lab01"
+version = "0.0.1"
+authors = [
+{ name="Joshua Oyedemi", email="joshua.oyedemi@ucalgary.ca" },
+]
+description="A Python package for GOPH 547 Lab 01"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+"numpy",
+"matplotlib",
+]
+classifiers = [
+"Programming Language :: Python :: 3",
+"Operating System :: OS Independent",
+"License :: OSI Approved :: GNU General Public License v3",
+]
+[project.urls]
+"Homepage" = "https://github.com/Dammmmilare/goph547-w2026-lab01-stOJ"
