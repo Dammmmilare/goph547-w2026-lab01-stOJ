@@ -24,6 +24,12 @@ def gravity_potential_point(x, xm, m, G=6.674e-11) :
     float
             Gravity potential at x due to anomaly at xm.
     """
+
+    """
+    Function
+    --------
+    """
+    
     r = np.linalg.norm(x - xm)
     V = - G * m / r
     return V
@@ -52,6 +58,12 @@ def gravity_effect_point(x, xm, m, G=6.674e-11) :
     float
             Gravity effect at x due to anomaly at xm.
     """
+
+    """
+    Function
+    --------
+    """
+
     r = np.linalg.norm(x - xm)
     gz = G * m * (x[2] - xm[2]) / r**3
     return gz
