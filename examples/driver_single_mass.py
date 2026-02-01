@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from src.gravity.py import gravity_potential_mass, gravity_effect_mass
+from src.gravity.py import gravity_potential_mass, gravity_effect_mass # type: ignore
 
 
 # Single Mass Anomaly & Contour Plot
@@ -8,4 +8,4 @@ from src.gravity.py import gravity_potential_mass, gravity_effect_mass
 def main():
 
     # Define parameters for single mass anomaly
-    
+# type: ignore
