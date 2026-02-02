@@ -1,6 +1,8 @@
+import sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import numpy as np
 import matplotlib.pyplot as plt
-from src.gravity import gravity_potential_point, gravity_effect_point 
+from src.goph547lab01.gravity import gravity_potential_point, gravity_effect_point 
 
 # Set up for the Single Mass Anomaly & Contour Plot
 
