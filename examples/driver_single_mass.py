@@ -20,14 +20,14 @@ def main():
     # survey grid at 25 m grid spacing
     u_25 = np.zeros((x_25.shape[0], x_25.shape[1], len(zp)))
     gz_25 = np.zeros((x_25.shape[0], x_25.shape[1], len(zp)))
-    xs = x_25[0, :]
-    ys = y_25[:, 0]
+    xs_25 = x_25[0, :]
+    ys_25 = y_25[:, 0]
 
-    # survey grid at 25 m grid spacing
+    # survey grid at 5 m grid spacing
     u_5 = np.zeros((x_5.shape[0], x_5.shape[1], len(zp)))
     gz_5 = np.zeros((x_5.shape[0], x_5.shape[1], len(zp)))
-    xs = x_5[0, :]
-    ys = y_5[:, 0]
+    xs_5 = x_5[0, :]
+    ys_5 = y_5[:, 0]
 
     for k in range(len(zp)):
         for i in range(x_25.shape[0]):
@@ -46,17 +46,23 @@ def main():
     
         plt.figure(figsize=(10, 5))
         plt.subplot(1, 2, 1)
-        plt.contour(xs, ys, gz_25[:, :, k], levels=20)
+        plt.contourf(xs_25, ys_25, gz_25[:, :, k], levels=20)
         plt.title(f'Gravity anomaly at z={zp[k]}m (25m grid)')
         plt.xlabel('x (m)')
         plt.ylabel('y (m)')
         plt.colorbar()
+        plt.savefig(f'gravity_anomaly_z_{zp[k]}m (25m grid).png')
 
         plt.subplot(1, 2, 2)
-        plt.contour(xs, ys, gz_5[:, :, k], levels=20)
+        plt.contourf(xs_5, ys_5, gz_5[:, :, k], levels=20)
         plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
         plt.xlabel('x (m)')
         plt.ylabel('y (m)')
         plt.colorbar()
+        plt.tight_layout()
+        plt.show()
+        plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
+        
 
-    # type: ignore
+if __name__ == "__main__":
+    main()
