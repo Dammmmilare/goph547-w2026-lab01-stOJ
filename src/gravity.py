@@ -29,10 +29,13 @@ def gravity_potential_point(x, xm, m, G=6.674e-11) :
     Function
     --------
     """
-    
+    x = np.asarray(x, dtype=float)
+    xm = np.asarray(xm, dtype=float)
+    G = float(G)
+    m = float(m)
     r = np.linalg.norm(x - xm)
-    V = - G * m / r
-    return V
+    U = - G * m / r
+    return U
 
 
 def gravity_effect_point(x, xm, m, G=6.674e-11) :
@@ -63,7 +66,10 @@ def gravity_effect_point(x, xm, m, G=6.674e-11) :
     Function
     --------
     """
-
+    G = float(G)
+    m = float(m)
+    x = np.asarray(x, dtype=float)
+    xm = np.asarray(xm, dtype=float)
     r = np.linalg.norm(x - xm)
     gz = G * m * (x[2] - xm[2]) / r**3
     return gz
