@@ -5,7 +5,7 @@
 
 QUICK DESCRIPTION
 
-An example repository setup for a simple Python package.Includes examples using Numpy arrays and Matplotlib for visulization.
+An example repository setup for a simple Python package includes examples using Numpy arrays and Matplotlib for visulization.
 
 HOW TO INSTALL
 
