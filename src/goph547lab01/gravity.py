@@ -34,8 +34,8 @@ def gravity_potential_point(x, xm, m, G=6.674e-11) :
     G = float(G)
     m = float(m)
     r = np.linalg.norm(x - xm)
-    U = - G * m / r
-    return U
+    u = - G * m / r
+    return u
 
 
 def gravity_effect_point(x, xm, m, G=6.674e-11) :
