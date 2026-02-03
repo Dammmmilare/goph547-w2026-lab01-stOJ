@@ -43,17 +43,39 @@ def main():
                 gz_5[i, j, k] = gravity_effect_point(x_survey, xm, m)
     
     # generating contour plots
-    
+        # generating contour plots for 25 m grid spacing
         plt.figure(figsize=(10, 5))
-        plt.subplot(1, 2, 1)
+        
+        plt.subplot(1, 3, 1)
         plt.contourf(xs_25, ys_25, gz_25[:, :, k], levels=20)
         plt.title(f'Gravity anomaly at z={zp[k]}m (25m grid)')
         plt.xlabel('x (m)')
         plt.ylabel('y (m)')
         plt.colorbar()
-        plt.savefig(f'gravity_anomaly_z_{zp[k]}m (25m grid).png')
+        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (25m grid).png')
 
-        plt.subplot(1, 2, 2)
+        plt.subplot(1, 3, 2)
+        plt.contourf(xs_25, ys_25, gz_25[:, :, k], levels=20)
+        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
+        plt.xlabel('x (m)')
+        plt.ylabel('y (m)')
+        plt.colorbar()
+        plt.tight_layout()
+        plt.show()
+        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
+
+        plt.subplot(1, 3, 3)
+        plt.contourf(xs_25, ys_25, gz_25[:, :, k], levels=20)
+        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
+        plt.xlabel('x (m)')
+        plt.ylabel('y (m)')
+        plt.colorbar()
+        plt.tight_layout()
+        plt.show()
+        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
+
+        # generating contour plots for 5 m grid spacing
+        plt.subplot(1, 3, 1)
         plt.contourf(xs_5, ys_5, gz_5[:, :, k], levels=20)
         plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
         plt.xlabel('x (m)')
@@ -61,7 +83,27 @@ def main():
         plt.colorbar()
         plt.tight_layout()
         plt.show()
-        plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
+        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
+
+        plt.subplot(1, 3, 2)
+        plt.contourf(xs_5, ys_5, gz_5[:, :, k], levels=20)
+        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
+        plt.xlabel('x (m)')
+        plt.ylabel('y (m)')
+        plt.colorbar()
+        plt.tight_layout()
+        plt.show()
+        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
+
+        plt.subplot(1, 3, 3)
+        plt.contourf(xs_5, ys_5, gz_5[:, :, k], levels=20)
+        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
+        plt.xlabel('x (m)')
+        plt.ylabel('y (m)')
+        plt.colorbar()
+        plt.tight_layout()
+        plt.show()
+        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
         
 
 if __name__ == "__main__":
