@@ -1,34 +1,39 @@
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+
 import numpy as np
 import matplotlib.pyplot as plt
 from src.goph547lab01.gravity import gravity_potential_point, gravity_effect_point 
 
-# Set up for the Single Mass Anomaly & Contour Plot
-
 def main():
     
+    # Parameters:
     m = 1.0e7  # mass of point anomaly in kg-m
     xm = np.array([0.0, 0.0, -10.0])  # location of point mass anomaly in m
-
-    # Create a grid of survey points at z=0
-    x_25, y_25 = np.meshgrid(np.linspace(-100, 100, 9), np.linspace(-100, 100, 9))
-    x_5, y_5 = np.meshgrid(np.linspace(-100, 100, 41), np.linspace(-100, 100, 41))
     zp = [0.0, 10.0, 100.0]  # survey plane at z=0
 
-    # Stating survey grids  @ 25 m and 5 m spacing.
+    # Grid survey points at 25 and 5m spacing:
+    x_25, y_25 = np.meshgrid(np.arange(-100, 125, 25), np.arange(-100, 125, 25))
+    x_5, y_5 = np.meshgrid(np.arange(-100, 105, 5), np.arange(-100, 105, 5))
+   
+
+    # Allocate arrays for potential and gravity effect
     # survey grid at 25 m grid spacing
     u_25 = np.zeros((x_25.shape[0], x_25.shape[1], len(zp)))
-    gz_25 = np.zeros((x_25.shape[0], x_25.shape[1], len(zp)))
-    xs_25 = x_25[0, :]
-    ys_25 = y_25[:, 0]
+    #gz_25 = np.zeros((x_25.shape[0], x_25.shape[1], len(zp)))
+    gz_25 = np.zeros_like(u_25)
+    
+    xs_25 = x_25 #[0, :]
+    ys_25 = y_25 #[:, 0]
 
     # survey grid at 5 m grid spacing
     u_5 = np.zeros((x_5.shape[0], x_5.shape[1], len(zp)))
-    gz_5 = np.zeros((x_5.shape[0], x_5.shape[1], len(zp)))
-    xs_5 = x_5[0, :]
-    ys_5 = y_5[:, 0]
+    # gz_5 = np.zeros((x_5.shape[0], x_5.shape[1], len(zp)))
+    gz_5 = np.zeros_like(u_5)
+    xs_5 = x_5 # [0, :]
+    ys_5 = y_5 # [:, 0]
 
+    # computing potential and gravity effect at each survey point
     for k in range(len(zp)):
         for i in range(x_25.shape[0]):
             for j in range(x_25.shape[1]):
@@ -43,68 +48,51 @@ def main():
                 gz_5[i, j, k] = gravity_effect_point(x_survey, xm, m)
     
     # generating contour plots
+
         # generating contour plots for 25 m grid spacing
-        plt.figure(figsize=(10, 5))
         
-        plt.subplot(1, 3, 1)
-        plt.contourf(xs_25, ys_25, gz_25[:, :, k], levels=20)
-        plt.title(f'Gravity anomaly at z={zp[k]}m (25m grid)')
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.colorbar()
-        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (25m grid).png')
+        fig, axs = plt.subplots(3, 2, figsize=(12, 12))
+        fig.suptitle(f'Single Mass Anomaly @ 25m grid spacing', fontsize=12)
+        
+        for l in range(len(zp)):
 
-        plt.subplot(1, 3, 2)
-        plt.contourf(xs_25, ys_25, gz_25[:, :, k], levels=20)
-        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.colorbar()
+            c1 = axs[l, 0].contourf(xs_25, ys_25, u_25[:, :, l], levels=20, cmap='viridis', vmin=u_25.min(), vmax=u_25.max())
+            
+            axs[l, 0].plot(x_25, y_25, 'xk', markersize=2)
+            axs[l, 0].set_title(f'U at z = {zp[l]} m')
+            fig.colorbar(c1, ax=axs[l, 0])
+
+            c2 = axs[l, 1].contourf(xs_25, ys_25, gz_25[:, :, l], levels=20, cmap='viridis', vmin=gz_25.min(), vmax=gz_25.max())
+            
+            axs[l, 1].plot(x_25, y_25, 'xk', markersize=2)
+            axs[l, 1].set_title(f'gz at z = {zp[l]} m')
+            fig.colorbar(c2, ax=axs[l, 1])
+
         plt.tight_layout()
         plt.show()
-        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
-
-        plt.subplot(1, 3, 3)
-        plt.contourf(xs_25, ys_25, gz_25[:, :, k], levels=20)
-        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.colorbar()
-        plt.tight_layout()
-        plt.show()
-        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
-
+        plt.savefig(f'single_mass_anomaly_25m_grid_z_{zp[l]}m.png')
         # generating contour plots for 5 m grid spacing
-        plt.subplot(1, 3, 1)
-        plt.contourf(xs_5, ys_5, gz_5[:, :, k], levels=20)
-        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.colorbar()
-        plt.tight_layout()
-        plt.show()
-        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
 
-        plt.subplot(1, 3, 2)
-        plt.contourf(xs_5, ys_5, gz_5[:, :, k], levels=20)
-        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.colorbar()
-        plt.tight_layout()
-        plt.show()
-        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
-
-        plt.subplot(1, 3, 3)
-        plt.contourf(xs_5, ys_5, gz_5[:, :, k], levels=20)
-        plt.title(f'Gravity anomaly at z={zp[k]}m (5m grid)')
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.colorbar()
-        plt.tight_layout()
-        plt.show()
-        #plt.savefig(f'gravity_anomaly_z_{zp[k]}m (5m grid).png')
+        fig, axs = plt.subplots(3, 2, figsize=(12, 12))
+        fig.suptitle(f'Single Mass Anomaly @ 5m grid spacing', fontsize=12)
         
+        for q in range(len(zp)):
 
+            c1 = axs[q, 0].contourf(xs_5, ys_5, u_5[:, :, q], levels=20, cmap='viridis', vmin=u_5.min(), vmax=u_5.max())
+            
+            axs[q, 0].plot(x_5, y_5, 'xk', markersize=2)
+            axs[q, 0].set_title(f'U at z = {zp[q]} m')
+            fig.colorbar(c1, ax=axs[q, 0])
+
+            c2 = axs[q, 1].contourf(xs_5, ys_5, gz_5[:, :, q], levels=20, cmap='viridis', vmin=gz_5.min(), vmax=gz_5.max())
+            
+            axs[q, 1].plot(x_5, y_5, 'xk', markersize=2)
+            axs[q, 1].set_title(f'gz at z = {zp[q]} m')
+            fig.colorbar(c2, ax=axs[q, 1])
+
+        plt.tight_layout()
+        plt.show()
+        plt.savefig(f'single_mass_anomaly_5m_grid_z_{zp[q]}m.png')
+        
 if __name__ == "__main__":
     main()
