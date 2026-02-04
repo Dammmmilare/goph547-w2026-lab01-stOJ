@@ -47,52 +47,51 @@ def main():
                 u_5[i, j, k] = gravity_potential_point(x_survey, xm, m)
                 gz_5[i, j, k] = gravity_effect_point(x_survey, xm, m)
     
-    # generating contour plots
+# generating contour plots
 
-        # generating contour plots for 25 m grid spacing
+    # generating contour plots for 25 m grid spacing        
+    fig, axs = plt.subplots(3, 2, figsize=(12, 12))
+    fig.suptitle(f'Single Mass Anomaly @ 25m grid spacing', fontsize=12)
         
-        fig, axs = plt.subplots(3, 2, figsize=(12, 12))
-        fig.suptitle(f'Single Mass Anomaly @ 25m grid spacing', fontsize=12)
+    for k in range(len(zp)):
+
+        c1 = axs[k, 0].contourf(xs_25, ys_25, u_25[:, :, k], levels=20, cmap='viridis', vmin=u_25.min(), vmax=u_25.max())
+            
+        axs[k, 0].plot(x_25, y_25, 'xk', markersize=2)
+        axs[k, 0].set_title(f'U at z = {zp[k]} m')
+        fig.colorbar(c1, ax=axs[k, 0])
+
+        c2 = axs[k, 1].contourf(xs_25, ys_25, gz_25[:, :, k], levels=20, cmap='viridis', vmin=gz_25.min(), vmax=gz_25.max())
+            
+        axs[k, 1].plot(x_25, y_25, 'xk', markersize=2)
+        axs[k, 1].set_title(f'gz at z = {zp[k]} m')
+        fig.colorbar(c2, ax=axs[k, 1])
+
+    plt.tight_layout()
+    plt.savefig(f'examples/single_mass_anomaly_25m_grid_z_{zp[k]}m.png')
+    plt.show()
+
+    # generating contour plots for 5 m grid spacing
+    fig, axs = plt.subplots(3, 2, figsize=(12, 12))
+    fig.suptitle(f'Single Mass Anomaly @ 5m grid spacing', fontsize=12)
         
-        for l in range(len(zp)):
+    for k in range(len(zp)):
 
-            c1 = axs[l, 0].contourf(xs_25, ys_25, u_25[:, :, l], levels=20, cmap='viridis', vmin=u_25.min(), vmax=u_25.max())
+        c1 = axs[k, 0].contourf(xs_5, ys_5, u_5[:, :, k], levels=20, cmap='viridis', vmin=u_5.min(), vmax=u_5.max())
             
-            axs[l, 0].plot(x_25, y_25, 'xk', markersize=2)
-            axs[l, 0].set_title(f'U at z = {zp[l]} m')
-            fig.colorbar(c1, ax=axs[l, 0])
+        axs[k, 0].plot(x_5, y_5, 'xk', markersize=2)
+        axs[k, 0].set_title(f'U at z = {zp[k]} m')
+        fig.colorbar(c1, ax=axs[k, 0])
 
-            c2 = axs[l, 1].contourf(xs_25, ys_25, gz_25[:, :, l], levels=20, cmap='viridis', vmin=gz_25.min(), vmax=gz_25.max())
+        c2 = axs[k, 1].contourf(xs_5, ys_5, gz_5[:, :, k], levels=20, cmap='viridis', vmin=gz_5.min(), vmax=gz_5.max())
             
-            axs[l, 1].plot(x_25, y_25, 'xk', markersize=2)
-            axs[l, 1].set_title(f'gz at z = {zp[l]} m')
-            fig.colorbar(c2, ax=axs[l, 1])
+        axs[k, 1].plot(x_5, y_5, 'xk', markersize=2)
+        axs[k, 1].set_title(f'gz at z = {zp[k]} m')
+        fig.colorbar(c2, ax=axs[k, 1])
 
-        plt.tight_layout()
-        plt.show()
-        plt.savefig(f'single_mass_anomaly_25m_grid_z_{zp[l]}m.png')
-        # generating contour plots for 5 m grid spacing
+    plt.tight_layout()
+    plt.savefig(f'examples/single_mass_anomaly_5m_grid_z_{zp[k]}m.png')
+    plt.show()
 
-        fig, axs = plt.subplots(3, 2, figsize=(12, 12))
-        fig.suptitle(f'Single Mass Anomaly @ 5m grid spacing', fontsize=12)
-        
-        for q in range(len(zp)):
-
-            c1 = axs[q, 0].contourf(xs_5, ys_5, u_5[:, :, q], levels=20, cmap='viridis', vmin=u_5.min(), vmax=u_5.max())
-            
-            axs[q, 0].plot(x_5, y_5, 'xk', markersize=2)
-            axs[q, 0].set_title(f'U at z = {zp[q]} m')
-            fig.colorbar(c1, ax=axs[q, 0])
-
-            c2 = axs[q, 1].contourf(xs_5, ys_5, gz_5[:, :, q], levels=20, cmap='viridis', vmin=gz_5.min(), vmax=gz_5.max())
-            
-            axs[q, 1].plot(x_5, y_5, 'xk', markersize=2)
-            axs[q, 1].set_title(f'gz at z = {zp[q]} m')
-            fig.colorbar(c2, ax=axs[q, 1])
-
-        plt.tight_layout()
-        plt.show()
-        plt.savefig(f'single_mass_anomaly_5m_grid_z_{zp[q]}m.png')
-        
 if __name__ == "__main__":
     main()
