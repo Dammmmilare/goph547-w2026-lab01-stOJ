@@ -29,30 +29,24 @@ def main():
     if (not os.path.exists("examples/mass_set_0.mat") or
             not os.path.exists("examples/mass_set_1.mat") or
             not os.path.exists("examples/mass_set_2.mat")): 
-            generate_mass_anomaly_sets() 
+            generate_mass_anomaly_sets()
 
     # Parameters:
-    m = 1.0e7  # mass of point anomaly in kg-m
-    xm = np.array([0.0, 0.0, -10.0])  # location of point mass anomaly in m
-    zp = [0.0, 10.0, 100.0]  # survey plane at z=0
+    m = 1.0e7  # mass of point anomaly in kg-m.
+    xm = np.array([0.0, 0.0, -10.0])  # location of point mass anomaly in m.
+    zp = [0.0, 10.0, 100.0]  # survey plane at z=0.0.
 
-    # Grid survey points at 25 and 5m spacing:
-    x_25, y_25 = np.meshgrid(np.arange(-100, 125, 25), np.arange(-100, 125, 25))
-    x_5, y_5 = np.meshgrid(np.arange(-100, 105, 5), np.arange(-100, 105, 5))
-   
+    for i in range(x_25.shape[0]):
+        m[i] = np.random.normal(m / xm, 0.1 * m / xm)
 
-    # Allocate arrays for potential and gravity effect
-    # survey grid at 25 m grid spacing
-    u_25 = np.zeros((x_25.shape[0], x_25.shape[1], len(zp)))
-    #gz_25 = np.zeros((x_25.shape[0], x_25.shape[1], len(zp)))
-    gz_25 = np.zeros_like(u_25)
-    
-    xs_25 = x_25 #[0, :]
-    ys_25 = y_25 #[:, 0]
+        xm[i, 0] = np.random.normal(0.0, 20.0)  # x-coordinate of mass anomaly location in m.
+        xm[i, 1] = np.random.normal(0.0, 20.0)  # y-coordinate of mass anomaly location in m.
+        xm[i, 2] = np.random.normal(-10.0, 2.0)  # z-coordinate of mass anomaly location in m.
 
-    # loading data sets.
+    m [4] = m - np.sum(m[:4])  # Adjust the last mass to ensure total mass is correct  
 
-    # stating multiple survey grids @ 25 m and 5 m spacing.
-    
+    weighted_xm = np.sum(m[:, np.newaxis] * xm, axis=0) / np.sum(m)
+    return m, xm, zp
+
 if __name__ == "__main__":
     main()
