@@ -73,7 +73,7 @@ def compute_fields(xg, yg, masses, locations):
 
     return u, gz
 
-def plot_fields(xg, yg, u, gz, zp, grid_spacing):
+def plot_fields(xg, yg, u, gz, zp, grid_spacing, set_id):
 
     fig, axs = plt.subplots(3, 2, figsize=(12, 12))
     fig.suptitle(f'Multiple Mass Anomalies @ {grid_spacing}m grid spacing', fontsize=12)
@@ -84,17 +84,17 @@ def plot_fields(xg, yg, u, gz, zp, grid_spacing):
             
         axs[k, 0].plot(xg, yg, 'xk', markersize=2)
         axs[k, 0].set_title(f'U at z = {zp[k]} m')
+        fig.colorbar(c1, ax=axs[k, 0])
 
         c2 = axs[k, 1].contourf(xg, yg, gz[:, :, k], levels=20, cmap='viridis', vmin=gz.min(), vmax=gz.max())
             
         axs[k, 1].plot(xg, yg, 'xk', markersize=2)
         axs[k, 1].set_title(f'gz at z = {zp[k]} m')
-
-    fig.colorbar(c1, ax=axs[:, 0], orientation='vertical', label='Gravity Potential (J/kg)')
-    fig.colorbar(c2, ax=axs[:, 1], orientation='vertical', label='Gravity Effect (m/s^2)')
+        fig.colorbar(c2, ax=axs[k, 1])
+    
 
     plt.tight_layout()
-    plt.savefig(f"examples/mass_anomalies_{grid_spacing}m.png", dpi=300)
+    plt.savefig(f"examples/mass_anomalies_{grid_spacing}m_set_{set_id}.png", dpi=300)
     plt.show()
     plt.close(fig)
     
@@ -111,10 +111,10 @@ def main():
         masses, locations = load_mass_anomaly_set(i)
 
         u25, gz25 = compute_fields(x25, y25, masses, locations)
-        plot_fields(x25, y25, u25, gz25, zp, 25)
+        plot_fields(x25, y25, u25, gz25, zp, 25, i)
 
         u5, gz5 = compute_fields(x5, y5, masses, locations)
-        plot_fields(x5, y5, u5, gz5, zp, 5)
+        plot_fields(x5, y5, u5, gz5, zp, 5, i)
 
 if __name__ == "__main__":
     main()
