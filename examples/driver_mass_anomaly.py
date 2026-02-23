@@ -116,7 +116,7 @@ def forward_model_gz(x, y, z, rho, survey_z):
             dz = survey_z - zv
 
             r3 = (dx**2 + dy**2 + dz**2)**1.5
-            r3[r3 == 0] = 1e-20  # avoid divide by zero
+            r3[r3 == 0] = 1e-20  # avoid dividing by zero
 
             gz[i, j] = np.sum(G * m * dz / r3)
 
@@ -136,7 +136,7 @@ def second_vertical_derivative(gz, dx):
 
     d2 = -(d2x + d2y)
 
-    # remove unreliable boundaries
+    # removing unreliable boundaries
     d2[:, 0] = np.nan
     d2[:, -1] = np.nan
     d2[0, :] = np.nan
@@ -189,7 +189,7 @@ def main():
     plt.tight_layout()
     plt.show()
 
-    # First derivative plots (optional but useful)
+    # First derivative plots
     fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
     axs[0].contourf(xg, yg, dgz_dz_0)
