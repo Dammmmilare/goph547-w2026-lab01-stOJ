@@ -33,7 +33,7 @@ def compute_mass_properties(x, y, z, rho):
     print("Barycentre (x,y,z):", x_bar, y_bar, z_bar)
     print("Maximum density:", rho_max)
     print("Mean density:", rho_mean)
-
+ 
     return total_mass, np.array([x_bar, y_bar, z_bar]), rho_mean
 
 
