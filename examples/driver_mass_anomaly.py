@@ -7,7 +7,7 @@ from scipy.io import loadmat
 from src.goph547lab01.gravity import gravity_effect_point
 
 VOXEL_SIZE = 2.0
-dV = VOXEL_SIZE**3          # 8 m^3
+dV = VOXEL_SIZE**3 
 SURVEY_SPACING = 5.0
 
 def load_anomaly():
@@ -53,7 +53,7 @@ def plot_density_cross_sections(x, y, z, rho, bary):
 
     fig, axs = plt.subplots(3, 1, figsize=(6, 12))
 
-    # XZ
+    # xz
     c1 = axs[0].contourf(x[:,0,:], z[:,0,:], rho_xz,
                          cmap="viridis", vmin=vmin, vmax=vmax)
     axs[0].plot(xb, zb, "xk", markersize=3)
@@ -62,7 +62,7 @@ def plot_density_cross_sections(x, y, z, rho, bary):
     axs[0].set_ylabel("z (m)")
     plt.colorbar(c1, ax=axs[0])
 
-    # YZ
+    # yz
     c2 = axs[1].contourf(y[0,:,:], z[0,:,:], rho_yz,
                          cmap="viridis", vmin=vmin, vmax=vmax)
     axs[1].plot(yb, zb, "xk", markersize=3)
@@ -71,7 +71,7 @@ def plot_density_cross_sections(x, y, z, rho, bary):
     axs[1].set_ylabel("z (m)")
     plt.colorbar(c2, ax=axs[1])
 
-    # XY
+    # xy
     c3 = axs[2].contourf(x[:,:,0], y[:,:,0], rho_xy,
                          cmap="viridis", vmin=vmin, vmax=vmax)
     axs[2].plot(xb, yb, "xk", markersize=3)
