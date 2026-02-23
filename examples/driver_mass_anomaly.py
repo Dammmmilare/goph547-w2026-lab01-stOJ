@@ -3,23 +3,19 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
 import numpy as np
 import matplotlib.pyplot as plt
+# from src.goph547lab01.gravity import gravity_effect_point
 from scipy.io import loadmat
-from src.goph547lab01.gravity import gravity_effect_point
 
 VOXEL_SIZE = 2.0
-dV = VOXEL_SIZE**3 
+dV = VOXEL_SIZE**3
 SURVEY_SPACING = 5.0
+G = 6.67430e-11
+
 
 def load_anomaly():
-
     data = loadmat("examples/anomaly_data.mat")
+    return data["x"], data["y"], data["z"], data["rho"]
 
-    x = data["x"]
-    y = data["y"]
-    z = data["z"]
-    rho = data["rho"]
-
-    return x, y, z, rho
 
 def compute_mass_properties(x, y, z, rho):
 
@@ -40,21 +36,21 @@ def compute_mass_properties(x, y, z, rho):
 
     return total_mass, np.array([x_bar, y_bar, z_bar]), rho_mean
 
+
 def plot_density_cross_sections(x, y, z, rho, bary):
 
     rho_xz = np.mean(rho, axis=1)
     rho_yz = np.mean(rho, axis=0)
     rho_xy = np.mean(rho, axis=2)
 
-    vmin = rho.min()
-    vmax = rho.max()
+    vmin = np.percentile(rho, 5)
+    vmax = np.percentile(rho, 95)
 
     xb, yb, zb = bary
 
     fig, axs = plt.subplots(3, 1, figsize=(6, 12))
 
-    # xz
-    c1 = axs[0].contourf(x[:,0,:], z[:,0,:], rho_xz,
+    c1 = axs[0].contourf(x[:, 0, :], z[:, 0, :], rho_xz,
                          cmap="viridis", vmin=vmin, vmax=vmax)
     axs[0].plot(xb, zb, "xk", markersize=3)
     axs[0].set_title("Mean Density - XZ Plane")
@@ -62,8 +58,7 @@ def plot_density_cross_sections(x, y, z, rho, bary):
     axs[0].set_ylabel("z (m)")
     plt.colorbar(c1, ax=axs[0])
 
-    # yz
-    c2 = axs[1].contourf(y[0,:,:], z[0,:,:], rho_yz,
+    c2 = axs[1].contourf(y[0, :, :], z[0, :, :], rho_yz,
                          cmap="viridis", vmin=vmin, vmax=vmax)
     axs[1].plot(yb, zb, "xk", markersize=3)
     axs[1].set_title("Mean Density - YZ Plane")
@@ -71,8 +66,7 @@ def plot_density_cross_sections(x, y, z, rho, bary):
     axs[1].set_ylabel("z (m)")
     plt.colorbar(c2, ax=axs[1])
 
-    # xy
-    c3 = axs[2].contourf(x[:,:,0], y[:,:,0], rho_xy,
+    c3 = axs[2].contourf(x[:, :, 0], y[:, :, 0], rho_xy,
                          cmap="viridis", vmin=vmin, vmax=vmax)
     axs[2].plot(xb, yb, "xk", markersize=3)
     axs[2].set_title("Mean Density - XY Plane")
@@ -82,6 +76,7 @@ def plot_density_cross_sections(x, y, z, rho, bary):
 
     plt.tight_layout()
     plt.show()
+
 
 def analyze_dense_region(x, y, z, rho, overall_mean):
 
@@ -108,36 +103,47 @@ def forward_model_gz(x, y, z, rho, survey_z):
 
     gz = np.zeros_like(xg)
 
-    x_flat = x.flatten()
-    y_flat = y.flatten()
-    z_flat = z.flatten()
-    rho_flat = rho.flatten()
+    xv = x.flatten()
+    yv = y.flatten()
+    zv = z.flatten()
+    m = rho.flatten() * dV
 
     for i in range(xg.shape[0]):
         for j in range(xg.shape[1]):
 
-            survey_point = np.array([xg[i,j], yg[i,j], survey_z])
+            dx = xg[i, j] - xv
+            dy = yg[i, j] - yv
+            dz = survey_z - zv
 
-            for xv, yv, zv, rhov in zip(x_flat, y_flat, z_flat, rho_flat):
+            r3 = (dx**2 + dy**2 + dz**2)**1.5
+            r3[r3 == 0] = 1e-20  # avoid divide by zero
 
-                mass = rhov * dV
-                source = np.array([xv, yv, zv])
-
-                gz[i,j] += gravity_effect_point(
-                    survey_point, source, mass
-                )
+            gz[i, j] = np.sum(G * m * dz / r3)
 
     return xg, yg, gz
+
 
 def first_vertical_derivative(gz_lower, gz_upper, dz):
     return (gz_upper - gz_lower) / dz
 
 def second_vertical_derivative(gz, dx):
 
-    d2x = (np.roll(gz, -1, axis=1) - 2*gz + np.roll(gz, 1, axis=1)) / dx**2
-    d2y = (np.roll(gz, -1, axis=0) - 2*gz + np.roll(gz, 1, axis=0)) / dx**2
+    d2x = np.zeros_like(gz)
+    d2y = np.zeros_like(gz)
 
-    return -(d2x + d2y)
+    d2x[:, 1:-1] = (gz[:, 2:] - 2*gz[:, 1:-1] + gz[:, :-2]) / dx**2
+    d2y[1:-1, :] = (gz[2:, :] - 2*gz[1:-1, :] + gz[:-2, :]) / dx**2
+
+    d2 = -(d2x + d2y)
+
+    # remove unreliable boundaries
+    d2[:, 0] = np.nan
+    d2[:, -1] = np.nan
+    d2[0, :] = np.nan
+    d2[-1, :] = np.nan
+
+    return d2
+
 
 def main():
 
@@ -149,7 +155,7 @@ def main():
 
     analyze_dense_region(x, y, z, rho, overall_mean)
 
-    print("\nRunning forward modelling... (may take time)")
+    print("\nRunning fast forward modelling...")
 
     xg, yg, gz_0 = forward_model_gz(x, y, z, rho, 0.0)
     _, _, gz_1 = forward_model_gz(x, y, z, rho, 1.0)
@@ -162,26 +168,40 @@ def main():
     d2gz_dz2_0 = second_vertical_derivative(gz_0, SURVEY_SPACING)
     d2gz_dz2_100 = second_vertical_derivative(gz_100, SURVEY_SPACING)
 
+    # 2x2 gz plots
     fig, axs = plt.subplots(2, 2, figsize=(10, 10))
 
     vmin = min(gz_0.min(), gz_1.min(), gz_100.min(), gz_110.min())
     vmax = max(gz_0.max(), gz_1.max(), gz_100.max(), gz_110.max())
 
-    axs[0,0].contourf(xg, yg, gz_0, vmin=vmin, vmax=vmax)
-    axs[0,0].set_title("gz @ 0 m")
+    axs[0, 0].contourf(xg, yg, gz_0, vmin=vmin, vmax=vmax)
+    axs[0, 0].set_title("gz @ 0 m")
 
-    axs[0,1].contourf(xg, yg, gz_100, vmin=vmin, vmax=vmax)
-    axs[0,1].set_title("gz @ 100 m")
+    axs[0, 1].contourf(xg, yg, gz_100, vmin=vmin, vmax=vmax)
+    axs[0, 1].set_title("gz @ 100 m")
 
-    axs[1,0].contourf(xg, yg, gz_1, vmin=vmin, vmax=vmax)
-    axs[1,0].set_title("gz @ 1 m")
+    axs[1, 0].contourf(xg, yg, gz_1, vmin=vmin, vmax=vmax)
+    axs[1, 0].set_title("gz @ 1 m")
 
-    axs[1,1].contourf(xg, yg, gz_110, vmin=vmin, vmax=vmax)
-    axs[1,1].set_title("gz @ 110 m")
+    axs[1, 1].contourf(xg, yg, gz_110, vmin=vmin, vmax=vmax)
+    axs[1, 1].set_title("gz @ 110 m")
 
     plt.tight_layout()
     plt.show()
 
+    # First derivative plots (optional but useful)
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+
+    axs[0].contourf(xg, yg, dgz_dz_0)
+    axs[0].set_title("∂gz/∂z @ 0 m")
+
+    axs[1].contourf(xg, yg, dgz_dz_100)
+    axs[1].set_title("∂gz/∂z @ 100 m")
+
+    plt.tight_layout()
+    plt.show()
+
+    # Second derivative plots
     fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
     axs[0].contourf(xg, yg, d2gz_dz2_0)
@@ -192,6 +212,7 @@ def main():
 
     plt.tight_layout()
     plt.show()
+
 
 if __name__ == "__main__":
     main()
