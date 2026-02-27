@@ -1,6 +1,7 @@
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 import numpy as np
 import matplotlib.pyplot as plt
 from src.goph547lab01.gravity import gravity_potential_point, gravity_effect_point 
@@ -68,7 +69,7 @@ def main():
         fig.colorbar(c2, ax=axs[k, 1])
 
     plt.tight_layout()
-    plt.savefig(f'examples/single_mass_anomaly_25m_grid_z_{zp[k]}m.png')
+    plt.savefig(f'examples/single_mass_anomaly/single_mass_anomaly_25m_grid_z_{zp[k]}m.png')
     plt.show()
 
     # generating contour plots for 5 m grid spacing
@@ -90,7 +91,7 @@ def main():
         fig.colorbar(c2, ax=axs[k, 1])
 
     plt.tight_layout()
-    plt.savefig(f'examples/single_mass_anomaly_5m_grid_z_{zp[k]}m.png')
+    plt.savefig(f'examples/single_mass_anomaly/single_mass_anomaly_5m_grid_z_{zp[k]}m.png')
     plt.show()
 
 if __name__ == "__main__":

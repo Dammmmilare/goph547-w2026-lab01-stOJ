@@ -1,6 +1,7 @@
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat, savemat
@@ -19,6 +20,7 @@ dV = VOXEL_SIZE**3
 
     data = loadmat("anomaly_data.mat")
     return data["x"], data["y"], data["z"], data["rho"]"""
+
 def load_anomaly():
 
     script_dir = pathlib.Path(__file__).resolve().parent
@@ -115,7 +117,7 @@ def plot_density(x, y, z, rho, bary):
     plt.title("Mean density along z-axis")
 
     plt.tight_layout()
-    plt.savefig("anomaly_mean_density.png", dpi=300)
+    plt.savefig("examples/mass_anomaly/anomaly_mean_density.png", dpi=300)
     plt.close()
 
 def generate_survey(mm_sub, xm_sub, ym_sub, zm_sub):
@@ -140,7 +142,7 @@ def generate_survey(mm_sub, xm_sub, ym_sub, zm_sub):
                     U_5[i, j, k] += gravity_potential_point(x_obs, xm_k, mm_k)
                     g_5[i, j, k] += gravity_effect_point(x_obs, xm_k, mm_k)
 
-    savemat("anomaly_survey_data.mat",
+    savemat("examples/mass_anomaly/anomaly_survey_data.mat",
             {"x_5": x_5,
              "y_5": y_5,
              "zp": zp,
@@ -182,7 +184,7 @@ def plot_survey(x_5, y_5, g_5):
         plt.colorbar(label=r"$g_z$ [m/s^2]")
 
     plt.tight_layout()
-    plt.savefig("anomaly_survey_data.png", dpi=300)
+    plt.savefig("examples/mass_anomaly/anomaly_survey_data.png", dpi=300)
     plt.close()
 
 def plot_derivatives(x_5, y_5, dgdz, d2gdz2):
@@ -212,7 +214,7 @@ def plot_derivatives(x_5, y_5, dgdz, d2gdz2):
     plt.colorbar()
 
     plt.tight_layout()
-    plt.savefig("anomaly_survey_derivatives.png", dpi=300)
+    plt.savefig("examples/mass_anomaly/anomaly_survey_derivatives.png", dpi=300)
     plt.close()
 
 def main():
@@ -225,10 +227,10 @@ def main():
 
     plot_density(x, y, z, rho, bary)
 
-    if not os.path.exists("anomaly_survey_data.mat"):
+    if not os.path.exists("examples/mass_anomaly/anomaly_survey_data.mat"):
         generate_survey(mm_sub, xm_sub, ym_sub, zm_sub)
 
-    survey = loadmat("anomaly_survey_data.mat")
+    survey = loadmat("examples/mass_anomaly/anomaly_survey_data.mat")
 
     x_5 = survey["x_5"]
     y_5 = survey["y_5"]

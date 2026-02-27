@@ -1,4 +1,5 @@
-import os
+import os,sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
@@ -10,7 +11,7 @@ from src.goph547lab01.gravity import gravity_potential_point, gravity_effect_poi
 def generate_mass_anomaly_sets():
     
     # Generate and save mass anomaly data sets
-    os.makedirs("examples", exist_ok=True)
+    os.makedirs("examples/multi_mass_anomaly/", exist_ok=True)
    
     m = 1.0e7 
     cen = np.array([0.0, 0.0, -10.0])  # cen is the centroid.
@@ -32,15 +33,15 @@ def generate_mass_anomaly_sets():
         weighted = np.sum(masses[:4, None]* locations[:4], axis=0)
         locations[4] = (m * cen - weighted) / masses[4]
 
-        savemat(f"examples/mass_set_{i:02d}.mat", {"masses": masses, "locations": locations})
+        savemat(f"examples/multi_mass_anomaly/mass_set_{i:02d}.mat", {"masses": masses, "locations": locations})
 
-    print ("Mass anomaly data sets generated and saved in 'example' directory.")
+    print ("Mass anomaly data sets generated and saved in 'example/multi_mass_anomaly' directory.")
     
     
 
 def load_mass_anomaly_set(set_id):
 
-    data = loadmat(f"examples/mass_set_{set_id:02d}.mat")
+    data = loadmat(f"examples/multi_mass_anomaly/mass_set_{set_id:02d}.mat")
 
     masses = data["masses"].flatten()
     locations = data["locations"]
@@ -94,13 +95,13 @@ def plot_fields(xg, yg, u, gz, zp, grid_spacing, set_id):
     
 
     plt.tight_layout()
-    plt.savefig(f"examples/mass_anomalies_{grid_spacing}m_set_{set_id}.png", dpi=300)
+    plt.savefig(f"examples/multi_mass_anomaly/mass_anomalies_{grid_spacing}m_set_{set_id}.png", dpi=300)
     plt.show()
     plt.close(fig)
     
 def main():
 
-    if not os.path.exists("examples/mass_set_00.mat"):
+    if not os.path.exists("examples/multi_mass_anomaly/mass_set_00.mat"):
         print("Generating mass anomaly data sets...")
         generate_mass_anomaly_sets()
 
