@@ -11,12 +11,12 @@ dV = VOXEL_SIZE**3
 SURVEY_SPACING = 5.0
 G = 6.67430e-11
 
-
+# Loading anomaly data
 def load_anomaly():
     data = loadmat("examples/anomaly_data.mat")
     return data["x"], data["y"], data["z"], data["rho"]
 
-
+# Computing mass poroperties
 def compute_mass_properties(x, y, z, rho):
 
     total_mass = np.sum(rho) * dV
@@ -36,7 +36,7 @@ def compute_mass_properties(x, y, z, rho):
  
     return total_mass, np.array([x_bar, y_bar, z_bar]), rho_mean
 
-
+# Generating density cross-section plots
 def plot_density_cross_sections(x, y, z, rho, bary):
 
     rho_xz = np.mean(rho, axis=1)
@@ -77,7 +77,7 @@ def plot_density_cross_sections(x, y, z, rho, bary):
     plt.tight_layout()
     plt.show()
 
-
+# Analyzing the dense region of the anomaly
 def analyze_dense_region(x, y, z, rho, overall_mean):
 
     threshold = 0.1 * rho.max()
@@ -94,6 +94,7 @@ def analyze_dense_region(x, y, z, rho, overall_mean):
     print("Increase relative to overall mean:",
           mean_region - overall_mean)
 
+# Fast forward modelling of gz at different survey heights
 def forward_model_gz(x, y, z, rho, survey_z):
 
     xg, yg = np.meshgrid(
@@ -122,10 +123,11 @@ def forward_model_gz(x, y, z, rho, survey_z):
 
     return xg, yg, gz
 
-
+# Computing vertical derivatives of gz
 def first_vertical_derivative(gz_lower, gz_upper, dz):
     return (gz_upper - gz_lower) / dz
 
+# Computing second vertical derivative of gz using central difference
 def second_vertical_derivative(gz, dx):
 
     d2x = np.zeros_like(gz)
@@ -144,7 +146,7 @@ def second_vertical_derivative(gz, dx):
 
     return d2
 
-
+# Main driver function
 def main():
 
     x, y, z, rho = load_anomaly()
@@ -212,7 +214,6 @@ def main():
 
     plt.tight_layout()
     plt.show()
-
 
 if __name__ == "__main__":
     main()
